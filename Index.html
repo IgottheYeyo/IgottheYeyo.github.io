@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEPTUN$ - Solana Token</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .dollar-rain {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.15;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-900 relative overflow-hidden">
+<!-- Animated Background -->
+<div id="dollarContainer" class="absolute inset-0 pointer-events-none"></div>
+
+<!-- Main Content -->
+<div class="relative z-10">
+    <!-- Navigation -->
+    <nav class="backdrop-blur-md bg-gray-900/80 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-blue-400">NEPTUN$</span>
+                </div>
+
+                <div class="flex space-x-4">
+                    <a href="#" class="flex items-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors">
+                        <i data-lucide="twitter" class="w-5 h-5 mr-2"></i>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors">
+                        <i data-lucide="message-circle" class="w-5 h-5 mr-2"></i>
+                        <span>Telegram</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Logo and Hero Section -->
+        <div class="mb-12 text-center">
+            <div class="mx-auto w-32 h-32 mb-6 relative">
+                <img
+                        src="/images/08-Neptun-01-removebg-preview.png"
+                        alt="NEPTUN$ Logo"
+                        class="w-full h-full object-contain"
+                />
+            </div>
+
+            <h1 class="text-4xl font-bold text-white mb-4">NEPTUN$
+                </h1>
+            <p class="text-gray-400 mb-8">
+                Track live transactions on the Solana blockchain
+            </p>
+
+            <!-- Price and Buy Button Section -->
+            <div class="max-w-xl mx-auto backdrop-blur-md bg-gray-800/80 rounded-lg p-6 mb-8">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="text-2xl font-bold text-blue-400">
+                        Current Price: $0.0458
+                    </div>
+                    <button
+                            class="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-all transform hover:scale-105 flex items-center gap-2"
+                            onclick="window.open('#', '_blank')"
+                    >
+                        Buy NEPTUN$ Now
+                        <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Transactions Feed -->
+        <div class="backdrop-blur-md bg-gray-800/80 rounded-lg overflow-hidden">
+            <div class="p-4 border-b border-gray-700">
+                <h2 class="text-xl font-semibold text-white">Live Transactions</h2>
+            </div>
+
+            <div id="transactionContainer" class="divide-y divide-gray-700">
+                <!-- Transactions will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Solana Integration Notice -->
+        <div class="mt-8 text-center">
+            <p class="text-gray-400 text-sm">
+                Powered by Solana Blockchain
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Dollar Rain Animation
+    function createDollarRain() {
+        const container = document.getElementById('dollarContainer');
+        const totalDollars = 60;
+
+        for (let i = 0; i < totalDollars; i++) {
+            const dollar = document.createElement('div');
+            dollar.className = 'dollar-rain';
+            dollar.textContent = '$';
+
+            // Random positioning and animation
+            const randomX = Math.random() * 100;
+            const randomDelay = Math.random() * 3;
+            const randomDuration = 8 + Math.random() * 7;
+            const randomRotation = Math.random() * 360;
+            const randomSize = 1 + Math.random() * 0.5;
+
+            dollar.style.left = `${randomX}%`;
+            dollar.style.animationDuration = `${randomDuration}s`;
+            dollar.style.animationDelay = `${randomDelay}s`;
+            dollar.style.transform = `rotate(${randomRotation}deg) scale(${randomSize})`;
+            dollar.style.color = i % 3 === 0 ? '#34d399' : '#60a5fa';
+
+            container.appendChild(dollar);
+        }
+    }
+
+    // Transaction Feed
+    function createTransactionElement(tx) {
+        return `
+            <div class="p-4 hover:bg-gray-700/50 transition-colors">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="px-2 py-1 rounded text-sm ${
+                            tx.type === 'Buy' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                        }">
+                            ${tx.type}
+                        </div>
+                        <span class="text-gray-300 font-mono">${tx.address}</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-white font-medium">${tx.amount} NEPTUN$</span>
+                        <span class="text-gray-400 text-sm">${tx.time}</span>
+                        <i data-lucide="arrow-up-right" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function updateTransactions() {
+        const container = document.getElementById('transactionContainer');
+        const newTransaction = {
+            address: `${Math.random().toString(36).substring(2, 6)}...${Math.random().toString(36).substring(2, 6)}`,
+            amount: (Math.random() * 5000).toFixed(0),
+            time: 'Just now',
+            type: Math.random() > 0.3 ? 'Buy' : 'Sell'
+        };
+
+        container.insertAdjacentHTML('afterbegin', createTransactionElement(newTransaction));
+
+        // Keep only the last 8 transactions
+        while (container.children.length > 8) {
+            container.removeChild(container.lastChild);
+        }
+
+        // Reinitialize Lucide icons for the new transaction
+        lucide.createIcons();
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        createDollarRain();
+
+        // Initial transactions
+        const initialTransactions = [
+            { address: '8x7B...3Fa9', amount: '2,450', time: '2 minutes ago', type: 'Buy' },
+            { address: '4x2C...9Db4', amount: '1,890', time: '5 minutes ago', type: 'Buy' },
+            { address: '6x9A...1Ec5', amount: '3,675', time: '8 minutes ago', type: 'Buy' }
+        ];
+
+        const container = document.getElementById('transactionContainer');
+        initialTransactions.forEach(tx => {
+            container.insertAdjacentHTML('beforeend', createTransactionElement(tx));
+        });
+
+        // Update transactions periodically
+        setInterval(updateTransactions, 3000);
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+    });
+</script>
+</body>
+</html>
